@@ -99,6 +99,40 @@ def test_use_case_b_multi_file_join(orchestrator: Orchestrator, tmp_path: Path) 
     assert output_df.loc[0, "department_name"] == "Engineering"
 
 
+def test_join_pre_filters_reduce_lookup_before_merge(orchestrator: Orchestrator, tmp_path: Path) -> None:
+    config = _load_config(SAMPLE_CONFIG)
+    config["blueprints"] = [config["blueprints"][1]]
+    join = config["blueprints"][0]["sources"]["joins"][0]
+    join["pre_filters"] = [
+        {
+            "left": "dept.id",
+            "operator": "==",
+            "right": 20,
+            "right_type": "literal",
+        }
+    ]
+
+    workspace, workspace_config = _prepare_workspace(
+        tmp_path,
+        source_files=["employees.csv", "departments.csv"],
+        config=config,
+    )
+
+    result = orchestrator.run(
+        workspace_config,
+        api_mode=True,
+        workspace_root=workspace,
+        uploaded_files={"employees.csv", "departments.csv"},
+    )
+
+    output_df = pd.read_csv(result.blueprint_results[0].output_path)
+    bob = output_df[output_df["employee_name"] == "Bob Jones"].iloc[0]
+    alice = output_df[output_df["employee_name"] == "Alice Smith"].iloc[0]
+
+    assert bob["department_name"] == "Sales"
+    assert pd.isna(alice["department_name"]) or alice["department_name"] == ""
+
+
 def test_use_case_c_multi_blueprint_multi_output(orchestrator: Orchestrator, tmp_path: Path) -> None:
     config = _load_config(SAMPLE_CONFIG)
 

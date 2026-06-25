@@ -90,6 +90,7 @@ class Join(BaseModel):
     file_name: str
     alias: str
     conditions: list[JoinConditionItem]
+    pre_filters: list[FilterItem] = Field(default_factory=list)
     comment: str | None = None
 
 

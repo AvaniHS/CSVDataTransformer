@@ -199,6 +199,8 @@ def _validate_blueprint(config: PipelineConfig, blueprint: Blueprint, prefix: st
                 blueprint,
                 f"{join_prefix}.conditions[{condition_index}]",
             )
+        for filter_index, item in enumerate(join.pre_filters):
+            _validate_filter_item(item, {join.alias}, f"{join_prefix}.pre_filters[{filter_index}]")
 
 
 def _validate_derivation(

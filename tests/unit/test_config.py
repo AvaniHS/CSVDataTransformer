@@ -107,3 +107,38 @@ def test_invalid_operator_in_join_fails_semantics(tmp_path: Path) -> None:
 def test_validate_config_schema_dict_rejects_non_object() -> None:
     with pytest.raises(ConfigValidationError):
         validate_config_schema_dict([])
+
+
+def test_join_pre_filters_accept_valid_alias(tmp_path: Path) -> None:
+    data = json.loads(SAMPLE_CONFIG.read_text(encoding="utf-8"))
+    data["blueprints"] = [data["blueprints"][1]]
+    data["blueprints"][0]["sources"]["joins"][0]["pre_filters"] = [
+        {
+            "left": "dept.id",
+            "operator": "==",
+            "right": 20,
+            "right_type": "literal",
+        }
+    ]
+    path = tmp_path / "config.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    config = JsonConfigReader().read(path)
+    assert config.blueprints[0].sources.joins[0].pre_filters[0].left == "dept.id"
+
+
+def test_join_pre_filters_reject_root_alias_reference(tmp_path: Path) -> None:
+    data = json.loads(SAMPLE_CONFIG.read_text(encoding="utf-8"))
+    data["blueprints"] = [data["blueprints"][1]]
+    data["blueprints"][0]["sources"]["joins"][0]["pre_filters"] = [
+        {
+            "left": "emp.department_id",
+            "operator": "==",
+            "right": 20,
+            "right_type": "literal",
+        }
+    ]
+    path = tmp_path / "config.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    with pytest.raises(ConfigValidationError) as exc_info:
+        JsonConfigReader().read(path)
+    assert "emp.department_id" in exc_info.value.message

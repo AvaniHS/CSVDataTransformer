@@ -93,9 +93,10 @@ Column reference in config: `{alias}.{column}` → engine physical name `{alias}
 | `file_name` | Yes | Join CSV filename |
 | `alias` | Yes | Unique alias for join table |
 | `conditions` | Yes | Array of predicates and/or groups |
+| `pre_filters` | No | Filters on join table after read, before merge (this join's `alias` only) |
 | `comment` | No | Optional note |
 
-Joins run in array order after `pre_filters`.
+Root `pre_filters` run before joins. Join `pre_filters` run after the join file is read, before merge.
 
 ---
 

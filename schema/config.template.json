@@ -24,7 +24,7 @@
     {
       "sequence_order": 1,
       "blueprint_id": "<reference_blueprint_id>",
-      "comment": "REFERENCE BLUEPRINT — demonstrates every supported section. See docs/CONFIG_TEMPLATE.md for predicate operators, filter forms, mapping variants, and use-case patterns. Remove this blueprint or replace placeholders before running. Source columns not listed in mappings are ignored. Post-filters run on target columns after mappings.",
+      "comment": "REFERENCE BLUEPRINT — demonstrates every supported section. Root pre_filters (below) run before joins; joins[].pre_filters run after join read, before merge. See docs/CONFIG_TEMPLATE.md.",
 
       "sources": {
         "root_table": {
@@ -39,7 +39,19 @@
             "connection_ref": "<connection_name>",
             "file_name": "<join_source.csv>",
             "alias": "<join_alias>",
-            "comment": "Optional join. join_type: LEFT | INNER | RIGHT | OUTER. Applied in array order after pre-filters.",
+            "comment": "Optional join. join_type: LEFT | INNER | RIGHT | OUTER. Applied in array order after root pre_filters. Optional pre_filters reduce join rows before merge.",
+            "pre_filters": [
+              {
+                "left": "<join_alias.status>",
+                "operator": "==",
+                "right": "<literal>",
+                "right_type": "literal"
+              },
+              {
+                "type": "expression",
+                "value": "<join_alias__column > 0>"
+              }
+            ],
             "conditions": [
               {
                 "left": "<root_alias.join_key>",
@@ -250,6 +262,14 @@
             "connection_ref": "<connection_name>",
             "file_name": "<lookup.csv>",
             "alias": "<b>",
+            "pre_filters": [
+              {
+                "left": "<b.active_flag>",
+                "operator": "==",
+                "right": "<literal>",
+                "right_type": "literal"
+              }
+            ],
             "conditions": [
               {
                 "left": "<a.key>",

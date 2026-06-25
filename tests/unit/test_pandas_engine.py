@@ -73,6 +73,24 @@ def test_apply_pre_filter_expression(engine: PandasExecutionEngine, employees_df
     assert filtered.iloc[0]["emp__first_name"] == "Alice"
 
 
+def test_apply_pre_filter_on_join_table_before_merge(
+    engine: PandasExecutionEngine,
+    departments_df: pd.DataFrame,
+) -> None:
+    """Join pre_filters use the same engine method on a prefixed join DataFrame."""
+    filters = [
+        Predicate(
+            left="dept.id",
+            operator="==",
+            right=20,
+            right_type="literal",
+        )
+    ]
+    filtered = engine.apply_pre_filters(departments_df, filters)
+    assert len(filtered) == 1
+    assert filtered.iloc[0]["dept__name"] == "Sales"
+
+
 def test_apply_join_left(engine: PandasExecutionEngine, employees_df: pd.DataFrame, departments_df: pd.DataFrame) -> None:
     conditions = [
         Predicate(

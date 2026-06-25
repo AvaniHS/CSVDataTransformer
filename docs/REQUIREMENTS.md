@@ -169,6 +169,7 @@ Always required. For use case A (single-file transform), this is the **only** so
 | `file_name` | Yes | Filename for the join table. |
 | `alias` | Yes | Prefix for join table columns. Must be unique within the blueprint. |
 | `conditions` | Yes | Non-empty array of join predicates and/or condition groups. |
+| `pre_filters` | No | Optional filters on the join table **after read, before merge**. Same forms as blueprint `pre_filters`; references must use this join's `alias` only. Default: `[]`. |
 | `comment` | No | Documentation only. |
 
 **Join condition — predicate form:**
@@ -511,9 +512,11 @@ data/
 For every blueprint, execute **sequentially** in this exact order:
 
 ```
-[Validate Config & Pre-Flight] → [Extract Root] → [Pre-Filters] → [Sequential Joins (if any)]
+[Validate Config & Pre-Flight] → [Extract Root] → [Root Pre-Filters] → [Sequential Joins (if any)]
   → [Derivations] → [Mappings & Casts] → [Post-Filters] → [Target Verification] → [Load]
 ```
+
+Each join step: read join file → prefix columns → **join pre-filters** (optional) → merge.
 
 Each blueprint runs this flow independently. When `sources.joins` is empty, the **Sequential Joins** step is skipped.
 
@@ -537,8 +540,8 @@ Any gate failure **aborts the entire run** immediately. Subsequent blueprints do
 | Step | Action |
 |---|---|
 | **1. Extract Root** | Read root file with connection `file_options`. Prefix columns as `{alias}__{column}`. |
-| **2. Pre-Filters** | Apply each filter entry (predicate, group, or expression). Abort on evaluation error. |
-| **3. Sequential Joins** | If `joins` is non-empty: load each join file, prefix columns, merge using `join_type` and conditions. If empty: skip. |
+| **2. Root Pre-Filters** | Apply `pre_filters` on the root DataFrame. Abort on evaluation error. |
+| **3. Sequential Joins** | If `joins` is non-empty: load each join file, prefix columns, apply optional `joins[].pre_filters`, then merge using `join_type` and conditions. If empty: skip. |
 | **4. Derivations** | Evaluate each derivation in order. Store as `deriv__{variable_name}`. |
 | **5. Mappings & Casts** | Build target DataFrame. Apply defaults, evaluate expressions, cast types. Abort on cast failure. |
 | **6. Post-Filters** | Apply post-mapping filters. |

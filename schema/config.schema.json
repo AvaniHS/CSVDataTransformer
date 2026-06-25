@@ -121,6 +121,11 @@
           "minItems": 1,
           "items": { "$ref": "#/$defs/joinConditionItem" }
         },
+        "pre_filters": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/filterItem" },
+          "default": []
+        },
         "comment": { "type": "string" }
       }
     },

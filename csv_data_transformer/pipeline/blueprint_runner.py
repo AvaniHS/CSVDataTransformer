@@ -82,6 +82,20 @@ class BlueprintRunner:
             join_path = input_dir / join.file_name
             right_df = join_reader.read(join_path, join_connection.file_options)
             right_df = prefix_dataframe_columns(right_df, join.alias)
+            if join.pre_filters:
+                rows_before = len(right_df)
+                right_df = engine.apply_pre_filters(right_df, join.pre_filters)
+                logger.info(
+                    "Applied join pre-filters %s",
+                    format_context(
+                        migration_id=config.migration_id,
+                        blueprint_id=blueprint.blueprint_id,
+                        gate="G2",
+                        join_alias=join.alias,
+                        rows_before=rows_before,
+                        rows_after=len(right_df),
+                    ),
+                )
             rows_before = len(df)
             df = engine.apply_join(df, right_df, join.join_type, join.conditions)
             logger.info(
