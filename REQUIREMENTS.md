@@ -1057,15 +1057,15 @@ Mark each step `[x]` when complete.
 
 ### Phase 2 — I/O Layer
 
-- [ ] **2.1** Implement `LOCAL_FILE_DIRECTORY` connection resolver with per-connection `file_options`.
-- [ ] **2.2** Implement `DataReader` ABC and `CsvDataReader` with encoding/delimiter/quote options.
-- [ ] **2.3** Implement source file-size guard (`max_file_size_mb`) — abort before read.
-- [ ] **2.4** Implement `DataReaderFactory` (format → reader).
-- [ ] **2.5** Implement `DataTargetWriter` ABC and `CsvDataWriter`.
-- [ ] **2.6** Implement target-empty guard (G1/G4) — abort if target has content.
-- [ ] **2.7** Implement atomic write (temp → rename).
-- [ ] **2.8** Implement `DataTargetFactory`.
-- [ ] **2.9** Unit tests: read options, size limit rejection, empty-target enforcement, atomic write.
+- [x] **2.1** Implement `LOCAL_FILE_DIRECTORY` connection resolver with per-connection `file_options`.
+- [x] **2.2** Implement `DataReader` ABC and `CsvDataReader` with encoding/delimiter/quote options.
+- [x] **2.3** Implement source file-size guard (`max_file_size_mb`) — abort before read.
+- [x] **2.4** Implement `DataReaderFactory` (format → reader).
+- [x] **2.5** Implement `DataTargetWriter` ABC and `CsvDataWriter`.
+- [x] **2.6** Implement target-empty guard (G1/G4) — abort if target has content.
+- [x] **2.7** Implement atomic write (temp → rename).
+- [x] **2.8** Implement `DataTargetFactory`.
+- [x] **2.9** Unit tests: read options, size limit rejection, empty-target enforcement, atomic write.
 
 ### Phase 3 — Column Names & Operators
 

@@ -1,4 +1,4 @@
-"""Connection model types — implemented in Phase 2."""
+"""Connection model types."""
 
 from __future__ import annotations
 
