@@ -1086,15 +1086,15 @@ Mark each step `[x]` when complete.
 
 ### Phase 5 — Pipeline Orchestration
 
-- [ ] **5.1** Implement G1 pre-flight checks in `pipeline/validator.py`.
-- [ ] **5.2** Implement `BlueprintRunner` — full step order (§4.1).
-- [ ] **5.3** Implement checkpoint logging at every gate.
-- [ ] **5.4** Implement G4 nullable verification before write.
-- [ ] **5.5** Implement `Orchestrator` — sequence blueprints, fail-first on any error.
-- [ ] **5.6** Integration test: single-file transform (use case A) end-to-end.
-- [ ] **5.7** Integration test: single-source split into multiple targets (use case D).
-- [ ] **5.8** Integration test: multi-blueprint multi-output different sources (use case C).
-- [ ] **5.9** Integration test: multi-file join single-output (use case B) end-to-end.
+- [x] **5.1** Implement G1 pre-flight checks in `pipeline/validator.py`.
+- [x] **5.2** Implement `BlueprintRunner` — full step order (§4.1).
+- [x] **5.3** Implement checkpoint logging at every gate.
+- [x] **5.4** Implement G4 nullable verification before write.
+- [x] **5.5** Implement `Orchestrator` — sequence blueprints, fail-first on any error.
+- [x] **5.6** Integration test: single-file transform (use case A) end-to-end.
+- [x] **5.7** Integration test: single-source split into multiple targets (use case D).
+- [x] **5.8** Integration test: multi-blueprint multi-output different sources (use case C).
+- [x] **5.9** Integration test: multi-file join single-output (use case B) end-to-end.
 
 ### Phase 6 — REST API & Swagger
 
