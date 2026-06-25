@@ -1069,10 +1069,10 @@ Mark each step `[x]` when complete.
 
 ### Phase 3 — Column Names & Operators
 
-- [ ] **3.1** Implement `column_names.py` — dot ↔ double-underscore translation.
-- [ ] **3.2** Implement `operators.py` — full operator dispatch (§2.5).
-- [ ] **3.3** Implement predicate and group evaluation for filters and join conditions.
-- [ ] **3.4** Unit tests: all operators, nested AND/OR groups, alias translation edge cases.
+- [x] **3.1** Implement `column_names.py` — dot ↔ double-underscore translation.
+- [x] **3.2** Implement `operators.py` — full operator dispatch (§2.5).
+- [x] **3.3** Implement predicate and group evaluation for filters and join conditions.
+- [x] **3.4** Unit tests: all operators, nested AND/OR groups, alias translation edge cases.
 
 ### Phase 4 — Execution Engine
 
