@@ -1,0 +1,140 @@
+{
+  "$schema": "./schema/config.schema.json",
+  "migration_id": "mig_direct_mapping_demo_2026",
+  "client_id": "client_demo",
+  "version": "1.0.0",
+
+  "connections": {
+    "local_file_system": {
+      "type": "LOCAL_FILE_DIRECTORY",
+      "base_path": "./data/input/",
+      "target_path": "./data/output/",
+      "file_options": {
+        "format": "CSV",
+        "encoding": "utf-8",
+        "delimiter": ",",
+        "quote_char": "\"",
+        "header_row": true,
+        "max_file_size_mb": 100
+      }
+    }
+  },
+
+  "blueprints": [
+    {
+      "sequence_order": 1,
+      "blueprint_id": "bp_direct_one_source_one_target",
+      "comment": "Direct mapping only — 1 source CSV → 1 target CSV. No joins, filters, or derivations.",
+      "target": {
+        "connection_ref": "local_file_system",
+        "file_name": "employees_export.csv"
+      },
+      "sources": {
+        "root_table": {
+          "connection_ref": "local_file_system",
+          "file_name": "employees.csv",
+          "alias": "emp"
+        },
+        "joins": []
+      },
+      "pre_filters": [],
+      "derivations": [],
+      "post_filters": [],
+      "mappings": [
+        {
+          "target_column": "employee_id",
+          "source_type": "DIRECT",
+          "source_value": "emp.id",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "first_name",
+          "source_type": "DIRECT",
+          "source_value": "emp.first_name",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "last_name",
+          "source_type": "DIRECT",
+          "source_value": "emp.last_name",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "email",
+          "source_type": "DIRECT",
+          "source_value": "emp.email",
+          "cast_to": "str",
+          "is_nullable": true
+        }
+      ]
+    },
+    {
+      "sequence_order": 2,
+      "blueprint_id": "bp_direct_two_sources_one_target",
+      "comment": "Direct mapping only — 2 source CSVs joined → 1 target CSV. No filters or derivations.",
+      "target": {
+        "connection_ref": "local_file_system",
+        "file_name": "employees_with_department.csv"
+      },
+      "sources": {
+        "root_table": {
+          "connection_ref": "local_file_system",
+          "file_name": "employees.csv",
+          "alias": "emp"
+        },
+        "joins": [
+          {
+            "join_type": "LEFT",
+            "connection_ref": "local_file_system",
+            "file_name": "departments.csv",
+            "alias": "dept",
+            "conditions": [
+              {
+                "left": "emp.department_id",
+                "operator": "==",
+                "right": "dept.id",
+                "right_type": "column"
+              }
+            ]
+          }
+        ]
+      },
+      "pre_filters": [],
+      "derivations": [],
+      "post_filters": [],
+      "mappings": [
+        {
+          "target_column": "employee_id",
+          "source_type": "DIRECT",
+          "source_value": "emp.id",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "employee_name",
+          "source_type": "DIRECT",
+          "source_value": "emp.full_name",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "department_id",
+          "source_type": "DIRECT",
+          "source_value": "dept.id",
+          "cast_to": "str",
+          "is_nullable": true
+        },
+        {
+          "target_column": "department_name",
+          "source_type": "DIRECT",
+          "source_value": "dept.name",
+          "cast_to": "str",
+          "is_nullable": true
+        }
+      ]
+    }
+  ]
+}

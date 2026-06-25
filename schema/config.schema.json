@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://csv-data-transformer.local/schema/config.schema.json",
+  "title": "CSV Data Transformer Config",
+  "description": "Placeholder schema — full definition in Phase 1",
+  "type": "object"
+}

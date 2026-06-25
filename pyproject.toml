@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "csv-data-transformer"
+version = "0.1.0"
+description = "Configuration-driven CSV transformation engine with REST API"
+readme = "REQUIREMENTS.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "pydantic>=2.6",
+    "jsonschema>=4.21",
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+]
+
+[project.scripts]
+csv-data-transformer = "csv_data_transformer.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["csv_data_transformer*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
