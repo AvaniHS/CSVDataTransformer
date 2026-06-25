@@ -2,13 +2,13 @@
 
 You are an expert systems architect and principal backend engineer. Your task is to build **csv_data_transformer** — a configuration-driven, API-first CSV transformation engine. You must strictly adhere to the following software engineering principles for all generated code, file layouts, and structural logic.
 
-**Authoritative references:** `REQUIREMENTS.md`, `sampleConfig.json`
+**Authoritative references:** `docs/REQUIREMENTS.md`, `sampleConfig.json`
 
 ---
 
 ## 1. Code Organization & Modularity
 
-* **Folder hierarchy:** Organize code into logical domain directories per `REQUIREMENTS.md` §3.4 (e.g., `config/`, `io/`, `engine/`, `pipeline/`, `api/`, `audit/`). Monolithic single-file layers are prohibited.
+* **Folder hierarchy:** Organize code into logical domain directories per `docs/REQUIREMENTS.md` §3.4 (e.g., `config/`, `io/`, `engine/`, `pipeline/`, `api/`, `audit/`). Monolithic single-file layers are prohibited.
 * **Pluggable & modular architecture:** Components must be fully decoupled. The config reader must not know pandas internals. The API layer must not contain transform logic — it delegates to the orchestrator.
 * **Small building blocks:** Write focused, atomic functions. Complex workflows orchestrate smaller, testable units.
 * **Extensibility:** Adding a new file format (XLSX) or config format (YAML) requires only a new class implementing the existing ABC — zero edits to orchestration.

@@ -40,6 +40,7 @@ class BlueprintRunner:
         *,
         input_dir: Path,
         output_dir: Path,
+        dry_run: bool = False,
     ) -> BlueprintRunResult:
         """Run blueprint and return output metadata."""
         engine = PandasExecutionEngine(blueprint_id=blueprint.blueprint_id)
@@ -121,6 +122,26 @@ class BlueprintRunner:
 
         output_dir.mkdir(parents=True, exist_ok=True)
         target_path = output_dir / blueprint.target.file_name
+
+        if dry_run:
+            logger.info(
+                "Dry-run skipping target write %s",
+                format_context(
+                    migration_id=config.migration_id,
+                    blueprint_id=blueprint.blueprint_id,
+                    gate="G4",
+                    target_file=target_path.name,
+                    rows=len(target_df),
+                ),
+            )
+            return BlueprintRunResult(
+                blueprint_id=blueprint.blueprint_id,
+                target_file_name=blueprint.target.file_name,
+                output_path=target_path,
+                row_count=len(target_df),
+                bytes_written=0,
+            )
+
         assert_target_empty(target_path, gate="G4")
 
         writer = DataTargetFactory.create(target_connection.file_options.format)

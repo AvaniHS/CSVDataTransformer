@@ -42,6 +42,7 @@ class Orchestrator:
         api_mode: bool = False,
         workspace_root: Path | None = None,
         uploaded_files: set[str] | None = None,
+        dry_run: bool = False,
     ) -> PipelineRunResult:
         """Execute all blueprints. Returns metadata for each output file."""
         pipeline_config = validate_config_schema(config)
@@ -99,6 +100,7 @@ class Orchestrator:
                 pipeline_config,
                 input_dir=resolver.base_path,
                 output_dir=resolver.target_path,
+                dry_run=dry_run,
             )
             results.append(result)
 

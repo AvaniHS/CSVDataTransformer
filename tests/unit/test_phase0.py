@@ -20,7 +20,7 @@ from csv_data_transformer.io.writers.factory import DataTargetFactory
 def test_package_version() -> None:
     from csv_data_transformer import __version__
 
-    assert __version__ == "0.1.0"
+    assert __version__ == "1.0.0"
 
 
 def test_domain_exceptions_carry_context() -> None:

@@ -1111,12 +1111,12 @@ Mark each step `[x]` when complete.
 
 ### Phase 7 — CLI, Docs & Release
 
-- [ ] **7.1** Implement `python -m csv_data_transformer run` and `validate` commands.
-- [ ] **7.2** Implement `--dry-run` and `--log-level` flags.
-- [ ] **7.3** Add `README.md` with API usage, **Swagger URL** (`/api/v1/docs`), curl examples, config walkthrough.
-- [ ] **7.4** Full end-to-end test — API and CLI paths with `sampleConfig.json`.
-- [ ] **7.5** SOLID review — confirm XLSX addition needs no orchestrator edits.
-- [ ] **7.6** Tag v1.0.0 release.
+- [x] **7.1** Implement `python -m csv_data_transformer run` and `validate` commands.
+- [x] **7.2** Implement `--dry-run` and `--log-level` flags.
+- [x] **7.3** Add `README.md` with API usage, **Swagger URL** (`/api/v1/docs`), curl examples, config walkthrough.
+- [x] **7.4** Full end-to-end test — API and CLI paths with `sampleConfig.json`.
+- [x] **7.5** SOLID review — confirm XLSX addition needs no orchestrator edits.
+- [x] **7.6** Tag v1.0.0 release.
 
 ---
 
