@@ -1098,16 +1098,16 @@ Mark each step `[x]` when complete.
 
 ### Phase 6 — REST API & Swagger
 
-- [ ] **6.1** Implement ephemeral workspace manager (`api/workspace.py`).
-- [ ] **6.2** Implement Pydantic API schemas (`api/schemas/`) — `HealthResponse`, `ValidateResponse`, `ErrorResponse`.
-- [ ] **6.3** Implement `create_app()` in `api/app.py` with OpenAPI metadata, CORS, router mounting.
-- [ ] **6.4** Implement route modules: `routes/health.py`, `routes/transform.py` with tags, summaries, `response_model`.
-- [ ] **6.5** Implement `exception_handlers.py` — domain errors → `ErrorResponse` JSON.
-- [ ] **6.6** Implement multipart upload handling — map uploaded filenames to config `file_name` refs.
-- [ ] **6.7** Implement response builders — single CSV (1 blueprint) or ZIP (2+ blueprints).
-- [ ] **6.8** Verify Swagger UI at `/api/v1/docs` — all endpoints, schemas, and error models visible.
-- [ ] **6.9** API integration tests with `httpx` — direct mapping paths + error response shape.
-- [ ] **6.10** Wire orchestrator to accept injected workspace paths (API mode vs. CLI mode).
+- [x] **6.1** Implement ephemeral workspace manager (`api/workspace.py`).
+- [x] **6.2** Implement Pydantic API schemas (`api/schemas/`) — `HealthResponse`, `ValidateResponse`, `ErrorResponse`.
+- [x] **6.3** Implement `create_app()` in `api/app.py` with OpenAPI metadata, CORS, router mounting.
+- [x] **6.4** Implement route modules: `routes/health.py`, `routes/transform.py` with tags, summaries, `response_model`.
+- [x] **6.5** Implement `exception_handlers.py` — domain errors → `ErrorResponse` JSON.
+- [x] **6.6** Implement multipart upload handling — map uploaded filenames to config `file_name` refs.
+- [x] **6.7** Implement response builders — single CSV (1 blueprint) or ZIP (2+ blueprints).
+- [x] **6.8** Verify Swagger UI at `/api/v1/docs` — all endpoints, schemas, and error models visible.
+- [x] **6.9** API integration tests with `httpx` — direct mapping paths + error response shape.
+- [x] **6.10** Wire orchestrator to accept injected workspace paths (API mode vs. CLI mode).
 
 ### Phase 7 — CLI, Docs & Release
 

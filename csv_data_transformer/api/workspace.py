@@ -1,4 +1,4 @@
-"""Ephemeral per-request workspace manager — implemented in Phase 6."""
+"""Ephemeral per-request workspace manager."""
 
 from __future__ import annotations
 

@@ -28,6 +28,12 @@ _STATUS_BY_ERROR: dict[type[TransformerError], int] = {
 }
 
 
+def _status_for_error(exc: TransformerError) -> int:
+    if isinstance(exc, FileGuardError) and "exceeds max_file_size_mb" in exc.message:
+        return 413
+    return _STATUS_BY_ERROR.get(type(exc), 422)
+
+
 def _to_error_response(exc: TransformerError) -> ErrorResponse:
     return ErrorResponse(
         error=exc.error_code,
@@ -46,7 +52,7 @@ def register_exception_handlers(app: FastAPI) -> None:
         request: Request,
         exc: TransformerError,
     ) -> JSONResponse:
-        status = _STATUS_BY_ERROR.get(type(exc), 422)
+        status = _status_for_error(exc)
         logger.error(
             "gate=%s blueprint_id=%s error=%s message=%s",
             exc.gate,

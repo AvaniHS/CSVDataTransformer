@@ -1,4 +1,4 @@
-"""Shared FastAPI dependencies — implemented in Phase 6."""
+"""Shared FastAPI dependencies."""
 
 from __future__ import annotations
 
