@@ -1048,12 +1048,12 @@ Mark each step `[x]` when complete.
 
 ### Phase 1 — Configuration Layer
 
-- [ ] **1.1** Define Pydantic models for all config blocks (§2).
-- [ ] **1.2** Implement `ConfigReader` ABC and `JsonConfigReader`.
-- [ ] **1.3** Implement `ConfigReaderFactory`.
-- [ ] **1.4** Author JSON Schema (`schema/config.schema.json`).
-- [ ] **1.5** Implement G0 validator — schema, aliases, operators, mappings.
-- [ ] **1.6** Unit tests: valid/invalid config cases with actionable error messages.
+- [x] **1.1** Define Pydantic models for all config blocks (§2).
+- [x] **1.2** Implement `ConfigReader` ABC and `JsonConfigReader`.
+- [x] **1.3** Implement `ConfigReaderFactory`.
+- [x] **1.4** Author JSON Schema (`schema/config.schema.json`).
+- [x] **1.5** Implement G0 validator — schema, aliases, operators, mappings.
+- [x] **1.6** Unit tests: valid/invalid config cases with actionable error messages.
 
 ### Phase 2 — I/O Layer
 

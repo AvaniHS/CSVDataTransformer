@@ -4,12 +4,13 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any
+
+from csv_data_transformer.config.models import PipelineConfig
 
 
 class ConfigReader(ABC):
     """Reads a configuration document from a file path."""
 
     @abstractmethod
-    def read(self, path: Path) -> dict[str, Any]:
-        """Load and return the parsed configuration document."""
+    def read(self, path: Path) -> PipelineConfig:
+        """Load, validate, and return the parsed configuration."""
