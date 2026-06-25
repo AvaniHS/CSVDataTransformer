@@ -498,6 +498,7 @@ tests/
 ├── unit/
 ├── integration/
 └── fixtures/                    # Sample CSV + config files
+    └── e2e/                     # Golden-file E2E regression (input, config, expected)
 data/
 ├── input/                       # Source fixture CSVs
 └── output/                      # Target output (empty before runs)
@@ -653,7 +654,7 @@ Each log line should include `migration_id`, `blueprint_id`, and `client_id` whe
 
 ## 8. REST API Interface (Primary)
 
-Built with **FastAPI**. Default bind: `0.0.0.0:8000`.
+Built with **FastAPI**. Default bind: `127.0.0.1:8001` (port 8001 avoids common local conflicts on 8000).
 
 ### 8.1 Endpoints
 
@@ -756,7 +757,7 @@ All examples use **`sampleConfig.json`**.
 Submit a config containing only `bp_direct_one_source_one_target`, or the full sample (ZIP response when 2 blueprints).
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/transform \
+curl -X POST http://localhost:8001/api/v1/transform \
   -F "config=@sampleConfig.json;type=application/json" \
   -F "files=@employees.csv" \
   -F "files=@departments.csv" \
@@ -775,13 +776,13 @@ Upload `employees.csv` and `departments.csv`. Response: ZIP with both target fil
 ### 8.6 Running the API Server
 
 ```bash
-uvicorn csv_data_transformer.api.app:app --host 0.0.0.0 --port 8000 --reload
+uvicorn csv_data_transformer.api.app:app --host 127.0.0.1 --port 8001 --reload
 ```
 
 | Environment variable | Default | Description |
 |---|---|---|
 | `API_HOST` | `0.0.0.0` | Bind host |
-| `API_PORT` | `8000` | Bind port |
+| `API_PORT` | `8001` | Bind port |
 | `API_MAX_BODY_MB` | `500` | Max multipart request size |
 | `API_TIMEOUT_SEC` | `300` | Request processing timeout |
 | `LOG_LEVEL` | `INFO` | Application log level |
@@ -1017,6 +1018,33 @@ python -m csv_data_transformer validate --config ./sampleConfig.json
 | Regression | Both sample blueprints from `sampleConfig.json` produce expected output snapshots. |
 | Pre-flight | Missing file uploads, file-size-limit, and validation error responses. |
 
+### 11.1 E2E Golden-File Regression
+
+Self-contained fixtures under `tests/fixtures/e2e/` drive end-to-end regression tests:
+
+| Artifact | Location |
+|---|---|
+| Source CSVs | `tests/fixtures/e2e/input/` |
+| Config | `tests/fixtures/e2e/config.json` |
+| Expected outputs | `tests/fixtures/e2e/expected/` |
+
+**Execution rules**
+
+- Run the same fixture through the **orchestrator**, **CLI**, and **API** paths.
+- After each run, compare every generated target CSV to the matching file in `expected/`.
+- Comparison must check column names, column order, row order, and cell values.
+- Normalize empty/missing cells to empty strings before compare so nullable fields behave consistently.
+- Any mismatch fails the test with a diff-friendly assertion (via `pandas.testing.assert_frame_equal`).
+
+**Fixture scenario**
+
+The E2E config defines two direct-mapping blueprints:
+
+| Blueprint | Sources | Expected output |
+|---|---|---|
+| `bp_direct_one_source_one_target` | `employees.csv` | `employees_export.csv` |
+| `bp_direct_two_sources_one_target` | `employees.csv` + `departments.csv` (LEFT join) | `employees_with_department.csv` |
+
 ---
 
 ## 12. Future Enhancements (Post-v1)
@@ -1117,6 +1145,13 @@ Mark each step `[x]` when complete.
 - [x] **7.4** Full end-to-end test — API and CLI paths with `sampleConfig.json`.
 - [x] **7.5** SOLID review — confirm XLSX addition needs no orchestrator edits.
 - [x] **7.6** Tag v1.0.0 release.
+
+### Phase 8 — E2E Golden-File Regression
+
+- [x] **8.1** Add self-contained fixtures under `tests/fixtures/e2e/` (input CSVs, config, expected outputs).
+- [x] **8.2** Add CSV comparison helper (`tests/support/csv_compare.py`).
+- [x] **8.3** Add regression tests for orchestrator, CLI, and API paths comparing generated vs expected CSVs.
+- [x] **8.4** Document golden-file testing rules in §11.1.
 
 ---
 

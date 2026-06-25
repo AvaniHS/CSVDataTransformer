@@ -245,9 +245,9 @@ api/
 
 | URL | Purpose |
 |---|---|
-| `http://localhost:8000/api/v1/docs` | Swagger UI |
-| `http://localhost:8000/api/v1/redoc` | ReDoc |
-| `http://localhost:8000/api/v1/openapi.json` | OpenAPI schema |
+| `http://localhost:8001/api/v1/docs` | Swagger UI |
+| `http://localhost:8001/api/v1/redoc` | ReDoc |
+| `http://localhost:8001/api/v1/openapi.json` | OpenAPI schema |
 
 ### 7.4 API Coding Rules
 

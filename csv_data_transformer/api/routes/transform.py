@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import time
 
-from fastapi import APIRouter, BackgroundTasks, File, UploadFile
+from fastapi import APIRouter, BackgroundTasks, File
 from fastapi.responses import Response
 
 from csv_data_transformer.api.responses import (
@@ -16,6 +16,7 @@ from csv_data_transformer.api.responses import (
 )
 from csv_data_transformer.api.schemas.errors import ErrorResponse
 from csv_data_transformer.api.schemas.validate import ValidateResponse
+from csv_data_transformer.api.types import BinaryUploadFile
 from csv_data_transformer.api.uploads import read_config_upload, save_uploaded_files
 from csv_data_transformer.api.workspace import Workspace, WorkspaceManager
 from csv_data_transformer.config.g0_validator import collect_output_files, collect_required_source_files
@@ -48,8 +49,8 @@ def _schedule_workspace_cleanup(background_tasks: BackgroundTasks, workspace: Wo
 )
 async def transform(
     background_tasks: BackgroundTasks,
-    config: UploadFile = File(..., description="JSON config file (see sampleConfig.json)"),
-    files: list[UploadFile] = File(..., description="Source CSV files referenced in config"),
+    config: BinaryUploadFile = File(..., description="JSON config file (see sampleConfig.json)"),
+    files: list[BinaryUploadFile] = File(..., description="Source CSV files referenced in config"),
 ) -> Response:
     """Validate config, run all blueprints, and return transformed output file(s)."""
     start = time.perf_counter()
@@ -115,8 +116,8 @@ async def transform(
     },
 )
 async def validate(
-    config: UploadFile = File(..., description="JSON config file"),
-    files: list[UploadFile] = File(..., description="Source CSV files referenced in config"),
+    config: BinaryUploadFile = File(..., description="JSON config file"),
+    files: list[BinaryUploadFile] = File(..., description="Source CSV files referenced in config"),
 ) -> ValidateResponse:
     """Run G0 and G1 validation without executing the transform pipeline."""
     workspace_manager = WorkspaceManager()

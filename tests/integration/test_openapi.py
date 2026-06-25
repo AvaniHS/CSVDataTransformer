@@ -59,7 +59,7 @@ def test_transform_shows_config_and_files_inputs(schema: dict[str, Any]) -> None
     files_field = body["properties"]["files"]
     assert files_field["type"] == "array"
     assert files_field["items"]["type"] == "string"
-    assert "contentMediaType" in files_field["items"]
+    assert files_field["items"].get("format") == "binary"
 
 
 def test_validate_shows_validate_response_schema(schema: dict[str, Any]) -> None:

@@ -39,24 +39,24 @@ Outputs are written to the connection `target_path` from config (default `./data
 
 ## Quick Start — API
 
-Start the server:
+Start the server (port **8001** avoids common conflicts with other local APIs on 8000):
 
 ```bash
-py -3.12 -m uvicorn csv_data_transformer.api.app:app --host 0.0.0.0 --port 8000 --reload
+py -3.12 -m uvicorn csv_data_transformer.api.app:app --host 127.0.0.1 --port 8001 --reload
 ```
 
 ### Swagger / OpenAPI
 
 | URL | Purpose |
 |---|---|
-| http://localhost:8000/api/v1/docs | Swagger UI |
-| http://localhost:8000/api/v1/redoc | ReDoc |
-| http://localhost:8000/api/v1/openapi.json | OpenAPI schema |
+| http://localhost:8001/api/v1/docs | Swagger UI |
+| http://localhost:8001/api/v1/redoc | ReDoc |
+| http://localhost:8001/api/v1/openapi.json | OpenAPI schema |
 
 ### Health check
 
 ```bash
-curl http://localhost:8000/api/v1/health
+curl http://localhost:8001/api/v1/health
 ```
 
 ### Transform (multipart upload)
@@ -64,7 +64,7 @@ curl http://localhost:8000/api/v1/health
 Full `sampleConfig.json` with both blueprints — upload `employees.csv` and `departments.csv`:
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/transform \
+curl -X POST http://localhost:8001/api/v1/transform \
   -F "config=@sampleConfig.json;type=application/json" \
   -F "files=@data/input/employees.csv" \
   -F "files=@data/input/departments.csv" \
@@ -76,7 +76,7 @@ Single-blueprint configs return one CSV (`Content-Type: text/csv`). Multi-bluepr
 ### Validate only
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/validate \
+curl -X POST http://localhost:8001/api/v1/validate \
   -F "config=@sampleConfig.json;type=application/json" \
   -F "files=@data/input/employees.csv" \
   -F "files=@data/input/departments.csv"
@@ -132,6 +132,18 @@ csv_data_transformer/
 ```bash
 py -3.12 -m pytest tests -v
 ```
+
+### E2E golden-file regression
+
+Fixtures live under `tests/fixtures/e2e/`:
+
+| Path | Purpose |
+|---|---|
+| `input/` | Source CSV files |
+| `config.json` | Two-blueprint direct-mapping config |
+| `expected/` | Golden output CSVs |
+
+Regression tests in `tests/integration/test_e2e_regression.py` run the fixture through the orchestrator, CLI, and API, then compare each generated CSV to the matching file in `expected/`.
 
 ## Extensibility
 

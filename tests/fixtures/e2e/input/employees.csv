@@ -1,0 +1,4 @@
+id,first_name,last_name,email,department_id,full_name
+1,Alice,Smith,alice@example.com,10,Alice Smith
+2,Bob,Jones,bob@example.com,20,Bob Jones
+3,Carol,Lee,,30,Carol Lee
