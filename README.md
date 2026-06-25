@@ -84,7 +84,7 @@ curl -X POST http://localhost:8001/api/v1/validate \
 
 ## Configuration
 
-See `sampleConfig.json` for the reference direct-mapping config and [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) for the full specification.
+See `sampleConfig.json` for the reference direct-mapping config and [`docs/CONFIG_TEMPLATE.md`](docs/CONFIG_TEMPLATE.md) for the full annotated config template (all scenarios).
 
 ### Top-level structure
 

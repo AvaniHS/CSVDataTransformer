@@ -1,0 +1,359 @@
+{
+  "$schema": "./config.schema.json",
+  "migration_id": "<place unique migration id here>",
+  "client_id": "<place client or tenant id here>",
+  "version": "<place config version here, e.g. 1.0.0>",
+
+  "connections": {
+    "<connection_name>": {
+      "type": "LOCAL_FILE_DIRECTORY",
+      "base_path": "<place source directory path here, e.g. ./data/input/>",
+      "target_path": "<place target directory path here, e.g. ./data/output/>",
+      "file_options": {
+        "format": "CSV",
+        "encoding": "utf-8",
+        "delimiter": ",",
+        "quote_char": "\"",
+        "header_row": true,
+        "max_file_size_mb": 100
+      }
+    }
+  },
+
+  "blueprints": [
+    {
+      "sequence_order": 1,
+      "blueprint_id": "<reference_blueprint_id>",
+      "comment": "REFERENCE BLUEPRINT — demonstrates every supported section. See docs/CONFIG_TEMPLATE.md for predicate operators, filter forms, mapping variants, and use-case patterns. Remove this blueprint or replace placeholders before running. Source columns not listed in mappings are ignored. Post-filters run on target columns after mappings.",
+
+      "sources": {
+        "root_table": {
+          "connection_ref": "<connection_name>",
+          "file_name": "<root_source.csv>",
+          "alias": "<root_alias>",
+          "comment": "Required root table. Alias must be unique within the blueprint."
+        },
+        "joins": [
+          {
+            "join_type": "LEFT",
+            "connection_ref": "<connection_name>",
+            "file_name": "<join_source.csv>",
+            "alias": "<join_alias>",
+            "comment": "Optional join. join_type: LEFT | INNER | RIGHT | OUTER. Applied in array order after pre-filters.",
+            "conditions": [
+              {
+                "left": "<root_alias.join_key>",
+                "operator": "==",
+                "right": "<join_alias.join_key>",
+                "right_type": "column"
+              }
+            ]
+          }
+        ]
+      },
+
+      "pre_filters": [
+        {
+          "left": "<root_alias.status>",
+          "operator": "!=",
+          "right": "<literal>",
+          "right_type": "literal"
+        },
+        {
+          "logic": "OR",
+          "conditions": [
+            {
+              "left": "<root_alias.status>",
+              "operator": "==",
+              "right": "<literal>",
+              "right_type": "literal"
+            },
+            {
+              "left": "<root_alias.code>",
+              "operator": "LIKE",
+              "right": "<pattern>",
+              "right_type": "literal"
+            }
+          ]
+        },
+        {
+          "type": "expression",
+          "value": "<root_alias__column > 0>"
+        }
+      ],
+
+      "derivations": [
+        {
+          "variable_name": "<expression_var>",
+          "transform_type": "EXPRESSION",
+          "expression": "<root_alias.qty * root_alias.unit_price>",
+          "comment": "Stored as deriv__expression_var; reference as deriv.expression_var in mappings."
+        },
+        {
+          "variable_name": "<regexp_var>",
+          "transform_type": "REGEXP_REPLACE",
+          "source": "<root_alias.phone>",
+          "pattern": "<regex>",
+          "replacement": "<replacement>",
+          "comment": "Regex replace on one qualified column."
+        },
+        {
+          "variable_name": "<case_var>",
+          "transform_type": "CASE",
+          "comment": "CASE branches use predicate or AND/OR when groups. then/else: literal, alias.column, or expression.",
+          "branches": [
+            {
+              "when": {
+                "left": "<root_alias.status>",
+                "operator": "==",
+                "right": "<literal>",
+                "right_type": "literal"
+              },
+              "then": "<literal or alias.column>"
+            },
+            {
+              "when": {
+                "logic": "AND",
+                "conditions": [
+                  {
+                    "left": "<root_alias.amount>",
+                    "operator": ">=",
+                    "right": 0,
+                    "right_type": "literal"
+                  },
+                  {
+                    "left": "<root_alias.code>",
+                    "operator": "IS_NOT_NULL",
+                    "right_type": "literal"
+                  }
+                ]
+              },
+              "then": "<literal>"
+            }
+          ],
+          "else": "<fallback>"
+        }
+      ],
+
+      "post_filters": [
+        {
+          "type": "expression",
+          "value": "<target_column > 0>"
+        }
+      ],
+
+      "target": {
+        "connection_ref": "<connection_name>",
+        "file_name": "<output.csv>",
+        "comment": "One target CSV per blueprint. File must be absent or empty before run."
+      },
+
+      "mappings": [
+        {
+          "target_column": "<direct_column>",
+          "source_type": "DIRECT",
+          "source_value": "<root_alias.column>",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "<direct_with_default>",
+          "source_type": "DIRECT",
+          "source_value": "<root_alias.nullable_column>",
+          "cast_to": "str",
+          "is_nullable": false,
+          "default_value": "<literal when source is null>"
+        },
+        {
+          "target_column": "<nullable_join_column>",
+          "source_type": "DIRECT",
+          "source_value": "<join_alias.column>",
+          "cast_to": "str",
+          "is_nullable": true
+        },
+        {
+          "target_column": "<derived_column>",
+          "source_type": "DERIVED",
+          "source_value": "deriv.<expression_var>",
+          "cast_to": "float64",
+          "is_nullable": false
+        },
+        {
+          "target_column": "<expression_column>",
+          "source_type": "EXPRESSION",
+          "source_value": "<root_alias.qty * root_alias.unit_price>",
+          "cast_to": "str",
+          "is_nullable": true
+        },
+        {
+          "target_column": "<hardcoded_column>",
+          "source_type": "EXPRESSION",
+          "source_value": "'<HARDCODED_LITERAL>'",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "<synthetic_null_column>",
+          "source_type": "EXPRESSION",
+          "source_value": "<root_alias.qty.where(root_alias.qty < 0)>",
+          "cast_to": "str",
+          "is_nullable": true
+        }
+      ]
+    },
+
+    {
+      "sequence_order": 2,
+      "blueprint_id": "<use_case_a_direct>",
+      "comment": "USE CASE A — one source, one target, direct mapping only. joins: [], pre_filters: [], derivations: [], post_filters: [].",
+
+      "sources": {
+        "root_table": {
+          "connection_ref": "<connection_name>",
+          "file_name": "<source.csv>",
+          "alias": "<alias>"
+        },
+        "joins": []
+      },
+      "pre_filters": [],
+      "derivations": [],
+      "post_filters": [],
+      "target": {
+        "connection_ref": "<connection_name>",
+        "file_name": "<output_a.csv>"
+      },
+      "mappings": [
+        {
+          "target_column": "<column>",
+          "source_type": "DIRECT",
+          "source_value": "<alias.column>",
+          "cast_to": "str",
+          "is_nullable": false
+        }
+      ]
+    },
+
+    {
+      "sequence_order": 3,
+      "blueprint_id": "<use_case_b_join>",
+      "comment": "USE CASE B — multiple sources joined, one target.",
+
+      "sources": {
+        "root_table": {
+          "connection_ref": "<connection_name>",
+          "file_name": "<root.csv>",
+          "alias": "<a>"
+        },
+        "joins": [
+          {
+            "join_type": "LEFT",
+            "connection_ref": "<connection_name>",
+            "file_name": "<lookup.csv>",
+            "alias": "<b>",
+            "conditions": [
+              {
+                "left": "<a.key>",
+                "operator": "==",
+                "right": "<b.key>",
+                "right_type": "column"
+              }
+            ]
+          }
+        ]
+      },
+      "pre_filters": [],
+      "derivations": [],
+      "post_filters": [],
+      "target": {
+        "connection_ref": "<connection_name>",
+        "file_name": "<output_b.csv>"
+      },
+      "mappings": [
+        {
+          "target_column": "<from_root>",
+          "source_type": "DIRECT",
+          "source_value": "<a.column>",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "<from_join>",
+          "source_type": "DIRECT",
+          "source_value": "<b.column>",
+          "cast_to": "str",
+          "is_nullable": true
+        }
+      ]
+    },
+
+    {
+      "sequence_order": 4,
+      "blueprint_id": "<use_case_c_multi_output>",
+      "comment": "USE CASE C — separate blueprint with its own sources. Repeat for additional outputs (API returns ZIP when 2+ blueprints).",
+
+      "sources": {
+        "root_table": {
+          "connection_ref": "<connection_name>",
+          "file_name": "<other_source.csv>",
+          "alias": "<alias>"
+        },
+        "joins": []
+      },
+      "pre_filters": [],
+      "derivations": [],
+      "post_filters": [],
+      "target": {
+        "connection_ref": "<connection_name>",
+        "file_name": "<output_c.csv>"
+      },
+      "mappings": [
+        {
+          "target_column": "<column>",
+          "source_type": "DIRECT",
+          "source_value": "<alias.column>",
+          "cast_to": "str",
+          "is_nullable": false
+        }
+      ]
+    },
+
+    {
+      "sequence_order": 5,
+      "blueprint_id": "<use_case_d_split>",
+      "comment": "USE CASE D — same root file as another blueprint, different mappings/target for single-source split.",
+
+      "sources": {
+        "root_table": {
+          "connection_ref": "<connection_name>",
+          "file_name": "<same_as_other_blueprint.csv>",
+          "alias": "<alias>"
+        },
+        "joins": []
+      },
+      "pre_filters": [],
+      "derivations": [],
+      "post_filters": [],
+      "target": {
+        "connection_ref": "<connection_name>",
+        "file_name": "<output_d.csv>"
+      },
+      "mappings": [
+        {
+          "target_column": "<column_a>",
+          "source_type": "DIRECT",
+          "source_value": "<alias.column_a>",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "<column_b>",
+          "source_type": "DIRECT",
+          "source_value": "<alias.column_b>",
+          "cast_to": "str",
+          "is_nullable": true,
+          "default_value": "<optional_default>"
+        }
+      ]
+    }
+  ]
+}
