@@ -1,0 +1,23 @@
+# Config UI — Backend dependencies (draft)
+#
+# Frontend (React) will have its own package.json under config_ui/frontend/
+#
+# Install BE deps:
+#   py -3.12 -m pip install -r requirements.txt
+
+# API
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9
+
+# Validation (align with parent engine G0)
+pydantic>=2.6
+jsonschema>=4.21
+
+# Dev / test
+pytest>=8.0
+httpx>=0.27
+
+# Optional: reuse parent package for G0 semantic validation (same repo)
+# Install parent in editable mode from repo root:
+#   py -3.12 -m pip install -e ".[dev]"
