@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ErrorDetail(BaseModel):
@@ -11,6 +11,20 @@ class ErrorDetail(BaseModel):
 
 
 class ErrorResponse(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [
+                {
+                    "error": "validation_failed",
+                    "message": "JSON Schema validation failed at 'blueprints'",
+                    "gate": "G0",
+                    "blueprint_id": None,
+                    "details": [{"field": "blueprints", "message": "is required"}],
+                }
+            ]
+        }
+    )
+
     error: str = Field(..., examples=["validation_failed"])
     message: str
     gate: str | None = None

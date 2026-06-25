@@ -106,9 +106,11 @@ async def transform(
     response_model=ValidateResponse,
     summary="Validate config and uploaded files",
     operation_id="validate_config",
+    description="Run G0 and G1 validation without executing the transform pipeline.",
     responses={
         400: {"model": ErrorResponse},
         413: {"model": ErrorResponse},
+        422: {"model": ErrorResponse},
         500: {"model": ErrorResponse},
     },
 )

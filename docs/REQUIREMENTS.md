@@ -961,13 +961,13 @@ app.add_middleware(
 
 #### 8.8.8 Swagger UI Verification Checklist
 
-- [ ] `/api/v1/docs` loads without errors
-- [ ] All three endpoints visible under correct tags
-- [ ] `POST /transform` shows `config` (file) and `files` (file array) inputs
-- [ ] `POST /validate` shows `response_model: ValidateResponse` schema
-- [ ] Error responses show `ErrorResponse` schema with example values
-- [ ] `GET /health` shows `HealthResponse` schema
-- [ ] OpenAPI JSON importable into Postman / Insomnia
+- [x] `/api/v1/docs` loads without errors
+- [x] All three endpoints visible under correct tags
+- [x] `POST /transform` shows `config` (file) and `files` (file array) inputs
+- [x] `POST /validate` shows `response_model: ValidateResponse` schema
+- [x] Error responses show `ErrorResponse` schema with example values
+- [x] `GET /health` shows `HealthResponse` schema
+- [x] OpenAPI JSON importable into Postman / Insomnia
 
 ---
 
