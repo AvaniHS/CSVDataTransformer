@@ -76,6 +76,13 @@ def resolve_column_reference(reference: str) -> str:
     return to_physical_column(alias, column)
 
 
+def is_config_column_reference(reference: str) -> bool:
+    """Return True when reference is a qualified column or deriv reference."""
+    return bool(
+        _QUALIFIED_COLUMN_PATTERN.match(reference) or _DERIVATION_REF_PATTERN.match(reference)
+    )
+
+
 def prefix_source_columns(columns: list[str], alias: str) -> list[str]:
     """Prefix raw source CSV column names with alias__."""
     return [to_physical_column(alias, column) for column in columns]

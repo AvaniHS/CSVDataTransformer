@@ -16,6 +16,7 @@ from csv_data_transformer.config.models import (
     Predicate,
 )
 from csv_data_transformer.engine.column_names import resolve_column_reference
+from csv_data_transformer.engine.expression_safety import validate_expression_safety
 from csv_data_transformer.engine.operators import evaluate_series_predicate
 from csv_data_transformer.exceptions import ErrorDetail, TransformError
 
@@ -86,14 +87,29 @@ def evaluate_join_conditions(df: pd.DataFrame, conditions: list[JoinConditionIte
 
 
 def evaluate_filter_item(df: pd.DataFrame, item: FilterItem) -> pd.Series:
-    """Evaluate a filter predicate or group. Expression filters are Phase 4."""
+    """Evaluate a filter predicate, group, or expression."""
     if isinstance(item, ExpressionFilter):
-        raise TransformError(
-            message="Expression filters are not implemented yet (Phase 4)",
-            gate="G2",
-            phase="filters",
-            expression=item.value,
-        )
+        validate_expression_safety(item.value)
+        try:
+            mask = df.eval(item.value, engine="python")
+        except Exception as exc:
+            raise TransformError(
+                message=f"Filter expression evaluation failed: {exc}",
+                gate="G2",
+                phase="filters",
+                expression=item.value,
+                details=[ErrorDetail(field="expression", message=item.value)],
+            ) from exc
+        if isinstance(mask, pd.DataFrame):
+            raise TransformError(
+                message="Filter expression must evaluate to a boolean Series",
+                gate="G2",
+                phase="filters",
+                expression=item.value,
+            )
+        if not isinstance(mask, pd.Series):
+            mask = pd.Series(bool(mask), index=df.index)
+        return mask.fillna(False)
     if isinstance(item, Predicate):
         return evaluate_predicate_on_dataframe(df, item)
     return evaluate_condition_group(df, item)

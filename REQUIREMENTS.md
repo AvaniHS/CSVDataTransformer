@@ -1076,13 +1076,13 @@ Mark each step `[x]` when complete.
 
 ### Phase 4 — Execution Engine
 
-- [ ] **4.1** Implement `ExecutionEngine` ABC and `PandasExecutionEngine`.
-- [ ] **4.2** Implement pre-filter and post-filter (predicate, group, expression forms).
-- [ ] **4.3** Implement sequential joins (LEFT, INNER, RIGHT, OUTER) with condition parsing.
-- [ ] **4.4** Implement derivations: `EXPRESSION`, `REGEXP_REPLACE`, `CASE`.
-- [ ] **4.5** Implement mapping builder (`DIRECT`, `DERIVED`, `EXPRESSION`) with `default_value`.
-- [ ] **4.6** Implement dtype casting with fail-first on coercion failure.
-- [ ] **4.7** Unit tests: each engine operation in isolation.
+- [x] **4.1** Implement `ExecutionEngine` ABC and `PandasExecutionEngine`.
+- [x] **4.2** Implement pre-filter and post-filter (predicate, group, expression forms).
+- [x] **4.3** Implement sequential joins (LEFT, INNER, RIGHT, OUTER) with condition parsing.
+- [x] **4.4** Implement derivations: `EXPRESSION`, `REGEXP_REPLACE`, `CASE`.
+- [x] **4.5** Implement mapping builder (`DIRECT`, `DERIVED`, `EXPRESSION`) with `default_value`.
+- [x] **4.6** Implement dtype casting with fail-first on coercion failure.
+- [x] **4.7** Unit tests: each engine operation in isolation.
 
 ### Phase 5 — Pipeline Orchestration
 

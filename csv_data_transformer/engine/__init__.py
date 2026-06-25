@@ -18,7 +18,10 @@ from csv_data_transformer.engine.predicates import (
     evaluate_predicate_on_dataframe,
 )
 
+from csv_data_transformer.engine.pandas_engine import PandasExecutionEngine, prefix_dataframe_columns
+
 __all__ = [
+    "PandasExecutionEngine",
     "apply_dataframe_filters",
     "evaluate_condition_group",
     "evaluate_join_condition_item",
@@ -27,6 +30,7 @@ __all__ = [
     "evaluate_predicate_on_dataframe",
     "from_physical_column",
     "normalize_operator",
+    "prefix_dataframe_columns",
     "prefix_source_columns",
     "resolve_column_reference",
     "to_config_column",

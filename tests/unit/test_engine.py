@@ -247,12 +247,12 @@ class TestDataFramePredicates:
             evaluate_predicate_on_dataframe(sample_df, predicate)
         assert exc_info.value.column == "emp__missing"
 
-    def test_expression_filter_not_implemented(self, sample_df: pd.DataFrame) -> None:
+    def test_expression_filter(self, sample_df: pd.DataFrame) -> None:
         from csv_data_transformer.config.models import ExpressionFilter
+        from csv_data_transformer.engine.predicates import apply_dataframe_filters
 
-        with pytest.raises(TransformError) as exc_info:
-            apply_dataframe_filters(
-                sample_df,
-                [ExpressionFilter(type="expression", value="emp__id > 0")],
-            )
-        assert "Phase 4" in exc_info.value.message
+        filtered = apply_dataframe_filters(
+            sample_df,
+            [ExpressionFilter(type="expression", value="emp__id > 2")],
+        )
+        assert len(filtered) == 2
