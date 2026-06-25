@@ -113,6 +113,10 @@ Column references use dot notation in config (`emp.first_name`) and double-under
 | `bp_direct_one_source_one_target` | `employees.csv` | `employees_export.csv` |
 | `bp_direct_two_sources_one_target` | `employees.csv` + `departments.csv` (LEFT join) | `employees_with_department.csv` |
 
+### Advanced manual test sample
+
+For joins, CASE, REGEXP_REPLACE, filters, null defaults, and ignored source columns, see [`samples/manual_advanced/`](samples/manual_advanced/README.md).
+
 ## Project Layout
 
 ```

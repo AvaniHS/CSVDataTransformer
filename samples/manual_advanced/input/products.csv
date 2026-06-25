@@ -1,0 +1,4 @@
+product_sku,product_name,category,unit_cost,warranty_months,supplier_id
+SKU-A,Widget Alpha,HARDWARE,12.00,24,SUP-01
+SKU-B,Gadget Beta,SOFTWARE,40.00,12,SUP-02
+SKU-C,Service Plan,SERVICES,5.00,36,SUP-03

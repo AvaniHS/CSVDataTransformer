@@ -1,0 +1,5 @@
+order_id,customer_name,product_name,category,region_name,line_amount,status_tier,phone_digits,contact_email,email_domain,data_source,future_expansion_field
+1001,Acme Corp,Widget Alpha,HARDWARE,Western US,255.0,PREMIUM,5551234567,alice@acme.com,acme.com,MANUAL_TEST,
+1002,Beta LLC,Gadget Beta,SOFTWARE,Eastern US,500.0,STANDARD,5559876543,no-email@placeholder.com,,MANUAL_TEST,
+1003,Gamma Inc,Service Plan,SERVICES,European Union,100.0,PREMIUM,0000000000,bob@gamma.com,gamma.com,MANUAL_TEST,
+1006,Foxtrot,Gadget Beta,SOFTWARE,,300.0,PREMIUM,5554445555,no-email@placeholder.com,,MANUAL_TEST,

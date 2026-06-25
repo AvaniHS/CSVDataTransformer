@@ -1,0 +1,5 @@
+region_code,region_name,country,currency,tax_rate,fiscal_zone_id
+US-WEST,Western US,USA,USD,0.0875,FZ-01
+US-EAST,Eastern US,USA,USD,0.0625,FZ-02
+EU,European Union,EU,EUR,0.20,FZ-03
+APAC,Asia Pacific,SG,SGD,0.08,FZ-04

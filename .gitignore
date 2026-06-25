@@ -55,6 +55,8 @@ Thumbs.db
 # Project runtime output
 data/output/*
 !data/output/.gitkeep
+samples/manual_advanced/output/*
+!samples/manual_advanced/output/.gitkeep
 
 # Temp workspaces / uploads
 *.tmp

@@ -1,0 +1,231 @@
+{
+  "$schema": "../../schema/config.schema.json",
+  "migration_id": "mig_manual_advanced_demo",
+  "client_id": "client_manual_test",
+  "version": "1.0.0",
+  "connections": {
+    "local_file_system": {
+      "type": "LOCAL_FILE_DIRECTORY",
+      "base_path": "./samples/manual_advanced/input/",
+      "target_path": "./samples/manual_advanced/output/",
+      "file_options": {
+        "format": "CSV",
+        "encoding": "utf-8",
+        "delimiter": ",",
+        "quote_char": "\"",
+        "header_row": true,
+        "max_file_size_mb": 100
+      }
+    }
+  },
+  "blueprints": [
+    {
+      "sequence_order": 1,
+      "blueprint_id": "bp_advanced_joins_and_transforms",
+      "comment": "Manual test — joins, CASE, REGEXP_REPLACE, null/default handling, ignored source columns, synthetic target columns.",
+      "sources": {
+        "root_table": {
+          "connection_ref": "local_file_system",
+          "file_name": "sales_orders.csv",
+          "alias": "ord",
+          "comment": "Extra source columns (sales_rep_id, internal_margin_pct, raw_checksum) are not mapped to target."
+        },
+        "joins": [
+          {
+            "join_type": "LEFT",
+            "connection_ref": "local_file_system",
+            "file_name": "products.csv",
+            "alias": "prod",
+            "comment": "supplier_id and unit_cost are ignored in target.",
+            "conditions": [
+              {
+                "left": "ord.product_sku",
+                "operator": "==",
+                "right": "prod.product_sku",
+                "right_type": "column"
+              }
+            ]
+          },
+          {
+            "join_type": "LEFT",
+            "connection_ref": "local_file_system",
+            "file_name": "regions.csv",
+            "alias": "reg",
+            "comment": "tax_rate and fiscal_zone_id are ignored in target.",
+            "conditions": [
+              {
+                "left": "ord.region_code",
+                "operator": "==",
+                "right": "reg.region_code",
+                "right_type": "column"
+              }
+            ]
+          }
+        ]
+      },
+      "pre_filters": [
+        {
+          "left": "ord.order_status",
+          "operator": "!=",
+          "right": "CANCELLED",
+          "right_type": "literal"
+        },
+        {
+          "left": "ord.qty",
+          "operator": ">",
+          "right": 0,
+          "right_type": "literal"
+        }
+      ],
+      "derivations": [
+        {
+          "variable_name": "line_amount",
+          "transform_type": "EXPRESSION",
+          "expression": "ord.qty * ord.unit_price",
+          "comment": "Computed line total."
+        },
+        {
+          "variable_name": "phone_digits",
+          "transform_type": "REGEXP_REPLACE",
+          "source": "ord.contact_phone",
+          "pattern": "[^0-9]",
+          "replacement": "",
+          "comment": "Strip non-digit characters from phone."
+        },
+        {
+          "variable_name": "status_tier",
+          "transform_type": "CASE",
+          "branches": [
+            {
+              "when": {
+                "left": "ord.order_status",
+                "operator": "==",
+                "right": "ACTIVE",
+                "right_type": "literal"
+              },
+              "then": "PREMIUM"
+            },
+            {
+              "when": {
+                "left": "ord.order_status",
+                "operator": "==",
+                "right": "PENDING",
+                "right_type": "literal"
+              },
+              "then": "STANDARD"
+            }
+          ],
+          "else": "OTHER",
+          "comment": "Bucket order status into tiers."
+        },
+        {
+          "variable_name": "email_domain",
+          "transform_type": "REGEXP_REPLACE",
+          "source": "ord.contact_email",
+          "pattern": "^.*@",
+          "replacement": "",
+          "comment": "Extract domain portion of email (empty when email missing)."
+        }
+      ],
+      "post_filters": [
+        {
+          "type": "expression",
+          "value": "line_amount > 0"
+        }
+      ],
+      "target": {
+        "connection_ref": "local_file_system",
+        "file_name": "sales_enriched_export.csv",
+        "comment": "Only mapped columns appear — no sales_rep_id, supplier_id, tax_rate, etc."
+      },
+      "mappings": [
+        {
+          "target_column": "order_id",
+          "source_type": "DIRECT",
+          "source_value": "ord.order_id",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "customer_name",
+          "source_type": "DIRECT",
+          "source_value": "ord.customer_name",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "product_name",
+          "source_type": "DIRECT",
+          "source_value": "prod.product_name",
+          "cast_to": "str",
+          "is_nullable": true
+        },
+        {
+          "target_column": "category",
+          "source_type": "DIRECT",
+          "source_value": "prod.category",
+          "cast_to": "str",
+          "is_nullable": true
+        },
+        {
+          "target_column": "region_name",
+          "source_type": "DIRECT",
+          "source_value": "reg.region_name",
+          "cast_to": "str",
+          "is_nullable": true
+        },
+        {
+          "target_column": "line_amount",
+          "source_type": "DERIVED",
+          "source_value": "deriv.line_amount",
+          "cast_to": "float64",
+          "is_nullable": false
+        },
+        {
+          "target_column": "status_tier",
+          "source_type": "DERIVED",
+          "source_value": "deriv.status_tier",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "phone_digits",
+          "source_type": "DERIVED",
+          "source_value": "deriv.phone_digits",
+          "cast_to": "str",
+          "is_nullable": false,
+          "default_value": "0000000000"
+        },
+        {
+          "target_column": "contact_email",
+          "source_type": "DIRECT",
+          "source_value": "ord.contact_email",
+          "cast_to": "str",
+          "is_nullable": false,
+          "default_value": "no-email@placeholder.com"
+        },
+        {
+          "target_column": "email_domain",
+          "source_type": "DERIVED",
+          "source_value": "deriv.email_domain",
+          "cast_to": "str",
+          "is_nullable": true
+        },
+        {
+          "target_column": "data_source",
+          "source_type": "EXPRESSION",
+          "source_value": "'MANUAL_TEST'",
+          "cast_to": "str",
+          "is_nullable": false
+        },
+        {
+          "target_column": "future_expansion_field",
+          "source_type": "EXPRESSION",
+          "source_value": "ord.qty.where(ord.qty < 0)",
+          "cast_to": "str",
+          "is_nullable": true
+        }
+      ]
+    }
+  ]
+}

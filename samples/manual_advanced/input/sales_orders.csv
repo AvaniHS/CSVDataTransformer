@@ -1,0 +1,7 @@
+order_id,customer_name,contact_email,contact_phone,product_sku,qty,unit_price,region_code,order_status,order_date,sales_rep_id,internal_margin_pct,raw_checksum
+1001,Acme Corp,alice@acme.com,555-123-4567,SKU-A,10,25.50,US-WEST,ACTIVE,2024-01-15,REP01,0.22,chk-1001
+1002,Beta LLC,,555-987-6543,SKU-B,5,100.00,US-EAST,PENDING,2024-02-01,REP02,0.18,chk-1002
+1003,Gamma Inc,bob@gamma.com,,SKU-C,2,50.00,EU,ACTIVE,2024-02-10,REP01,0.15,chk-1003
+1004,Delta Co,carol@delta.com,555-000-1111,SKU-UNKNOWN,1,10.00,US-WEST,CANCELLED,2024-03-01,REP03,0.10,chk-1004
+1005,Echo Ltd,echo@example.com,555-222-3333,SKU-A,0,25.50,APAC,ACTIVE,2024-03-15,REP02,0.20,chk-1005
+1006,Foxtrot,,555-444-5555,SKU-B,3,100.00,XX-INVALID,ACTIVE,2024-04-01,REP01,0.12,chk-1006
