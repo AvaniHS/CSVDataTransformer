@@ -121,6 +121,7 @@ For joins, CASE, REGEXP_REPLACE, filters, null defaults, and ignored source colu
 
 ```
 docs/             # REQUIREMENTS.md, AI coding guidelines, extensibility notes
+                  # ASYNC_JOB_QUEUE_BRAINSTORM.md — async queue & live progress (design)
 config_ui/        # Config generator UI (separate sub-project; see config_ui/REQUIREMENTS.md)
 csv_data_transformer/
 ├── api/          # FastAPI routes, schemas, workspace

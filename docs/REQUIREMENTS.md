@@ -71,7 +71,7 @@ In API mode, the service creates an isolated temp workspace per request, maps up
 - Database connectors — deferred to a future phase.
 - UPSERT / APPEND / primary-key merge semantics (target CSV is always empty).
 - Web UI / admin dashboard — API-only for v1.
-- Long-lived async job queue — requests are synchronous per call (within timeout).
+- Long-lived async job queue — requests are synchronous per call (within timeout). See [`ASYNC_JOB_QUEUE_BRAINSTORM.md`](ASYNC_JOB_QUEUE_BRAINSTORM.md) for design exploration.
 
 ---
 
