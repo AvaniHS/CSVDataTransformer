@@ -66,3 +66,8 @@ samples/manual_advanced/output/*
 # Logs
 *.log
 logs/
+
+# Config UI runtime / build artifacts
+.config_ui_sessions/
+config_ui/frontend/node_modules/
+config_ui/frontend/dist/

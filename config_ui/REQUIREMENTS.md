@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Version | 0.1 |
-| Status | **Requirements captured** — implementation pending |
+| Status | **v1 implemented** — see [`README.md`](README.md) for run instructions |
 | Parent engine | [`docs/REQUIREMENTS.md`](../docs/REQUIREMENTS.md) v1.6 |
 
 ## 1. Purpose
@@ -143,7 +143,7 @@ Linear wizard with **Back** navigation. Metadata editable from a persistent **Se
 | Upload | Rules |
 |---|---|
 | Source CSVs (N) | Must have header row + data rows; infer column names (and sample types). |
-| Target CSVs (M) | **Headers only** — reject files with data rows. Headers = `target_column` names. |
+| Target CSVs (M) | **Headers define columns.** If the file contains data rows, only the header row is kept and the user sees a truncation warning. |
 
 - Auto-suggest **alias** per source from filename (editable).
 - Show schema preview table per file.
@@ -162,7 +162,9 @@ Only show columns from the relevant source (with alias prefix in generated JSON)
 ### Step 4 — Joins (when blueprint uses 2+ sources)
 
 - Sequential joins matching engine order (array order in `sources.joins`).
-- User picks: `join_type` (dropdown), join file, alias, conditions from **column dropdowns** only (no free-text column names).
+- User picks: `join_type` (dropdown), join file, alias, conditions from **column dropdowns** (predicates with operators; literal or column right-hand side).
+- At least one **merge key** per join: `==` with `right_type: column` on both sides. Additional conditions are post-merge filters.
+- **Not in UI v1:** expression-form join keys; `deriv.*` references (derivations run after joins).
 - Conditions: predicate or AND/OR groups; operators from supported set (§2.5 parent doc).
 - **No advanced join types** beyond engine (no arbitrary join graphs).
 
@@ -229,7 +231,7 @@ For each of M blueprints / target files:
 | ID | Requirement |
 |---|---|
 | FR-1 | User sets N sources and M targets; M = number of blueprints. |
-| FR-2 | Target uploads must be header-only; reject data rows with clear error. |
+| FR-2 | Target uploads use headers only; data rows are stripped with a clear warning. |
 | FR-3 | Support use cases A, B, C, D per parent §1.1. |
 | FR-4 | Pre-filter configuration per source; root filters emitted to `pre_filters`. |
 | FR-5 | Join configuration via dropdowns (columns, operators, join types, aliases). |

@@ -4,18 +4,64 @@ Web wizard for building CSV Data Transformer config JSON files.
 
 ## Status
 
-**Requirements captured** — see [`REQUIREMENTS.md`](REQUIREMENTS.md) for the full spec (wizard flow, use cases C/D, BE/FE split, UX principles §3.4).
+**v1 implemented** — FastAPI backend + React wizard frontend.
 
-**AI / implementation guidelines** — see [`codeSanityGuilinesForAI.md`](codeSanityGuilinesForAI.md) (architecture, UX, FE, BE, errors, tests).
+| Document | Purpose |
+|---|---|
+| [`REQUIREMENTS.md`](REQUIREMENTS.md) | Product spec |
+| [`codeSanityGuilinesForAI.md`](codeSanityGuilinesForAI.md) | AI / implementation rules |
 
-## Planned layout
+## Layout
 
 ```
 config_ui/
-├── REQUIREMENTS.md      # Product spec
-├── requirements.txt     # Python BE dependencies
-├── backend/             # FastAPI (TBD)
-└── frontend/            # React + Vite (TBD)
+├── backend/          # FastAPI (port 8002)
+├── frontend/         # React + Vite (port 5173)
+├── requirements.txt
+└── run-dev.ps1
+```
+
+## Prerequisites
+
+- Python 3.11+ with parent package installed: `py -3.12 -m pip install -e ".[dev]"`
+- Node.js 18+ for the frontend
+
+## Install
+
+```powershell
+# From repo root
+py -3.12 -m pip install -r config_ui/requirements.txt
+py -3.12 -m pip install -e ".[dev]"
+
+cd config_ui/frontend
+npm install
+```
+
+## Run (development)
+
+**Backend** (from repo root):
+
+```powershell
+py -3.12 -m uvicorn config_ui.backend.app:app --host 0.0.0.0 --port 8002 --reload
+```
+
+- Swagger: http://localhost:8002/api/v1/docs
+
+**Frontend** (proxies `/api` to backend):
+
+```powershell
+cd config_ui/frontend
+npm run dev
+```
+
+- App: http://localhost:5173
+
+Or use `.\config_ui\run-dev.ps1` to start both (backend in background).
+
+## Tests
+
+```powershell
+py -3.12 -m pytest config_ui/backend/tests -q
 ```
 
 ## Related docs (parent project)
